@@ -13,6 +13,9 @@ authorizationRouter.use(function(req, res, next) {
 // registration user
 authorizationRouter.post('/registration', function(req, res) {
     const { username, email, password, gender } = req.body.user;
+
+    console.log('req.body.user: ', req.body.user);
+
     const user = new User({
         username,
         email,
@@ -21,6 +24,7 @@ authorizationRouter.post('/registration', function(req, res) {
     });
     user.save(function(err, doc, next) {
         if (err) {
+            console.log('test');
             const errorsList = Object.values(err.errors).map(item => item.properties.message);
             return res.status(500).json({ message: errorsList });
         } else {

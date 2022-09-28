@@ -2,10 +2,14 @@ require('dotenv').config();
 
 // Подключаем бэкенд на Express.
 const express = require('express');
+const cors = require('cors');
 
 // создаём приложение и настраиваем сокеты
 const { app, server } = require('./chat');
 
+app.use(cors({
+    origin: '*'
+}));
 app.use(express.json());
 
 // Подключаем Mongoose и делаем коннект к базе данных.
