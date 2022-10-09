@@ -2,6 +2,9 @@ const app = require('express')();
 const server = require('http').createServer(app);
 const io = require('socket.io')(server, {
     allowEIO3: true, // false by default
+    cors: {
+        origin: '*',
+    }
 });
 // const { v4: uuidv4 } = require('uuid');
 const Room = require('./models/room');
@@ -34,6 +37,7 @@ io.on('connection', socket => {
 
     // инициализация комнат для общения
     socket.on('initialRooms', async ({ user }, cb) => {
+        // console.log('test: ', user);
         // если нет в БД общей комнаты то создаем её
         const room = await Room.findOne({ name: 'общая' }).exec();
         if (!room) {
@@ -166,7 +170,7 @@ io.on('connection', socket => {
 
     // создать новую комнату
     socket.on('createNewRoom', ({ room, user }, cb) => {
-        // console.log('user: ', user);
+        console.log('user: ', user);
         // console.log('room: ', room);
         socket.emit('setError', []);
 
