@@ -98,6 +98,7 @@ io.on('connection', socket => {
 
     // подключение к комнате
     socket.on('joinedRooms', async ({ user, room }, cb) => {
+        // console.log('room: ', room._id);
         // цепляемся в определенной комнате
         socket.join(room._id);
         // тут создаём модель сообщения и сохраняем её
@@ -116,6 +117,7 @@ io.on('connection', socket => {
 
         // проверяем есть ли в комнате юзер с таким айди, если нет то добавляем
         const isRepeat = currentRoom.users.some(item => item._id === user._id);
+        // console.log('isRepeat', isRepeat);
         if (!isRepeat) {
             // удаляем пароль перед добавлениям в комнату
             delete user.password;
@@ -124,10 +126,13 @@ io.on('connection', socket => {
         }
 
         // обновляем на клиенте текущую комнату
+        // console.log(currentRoom.users);
         io.to(room._id).emit('updateCurrentRoom', normalizeRoom(currentRoom));
+        // console.log('room: ', room._id);
         // обновляем список всех комнат на клиенте, нужно чтобы другие участники видели кто и в каких комнатах
         socket._events.updateAllRooms();
         socket._events.updateMyRooms({ user });
+
         // // то что будем транслироваться для других участников
         // socket.broadcast
         //     .to(room)
@@ -135,7 +140,9 @@ io.on('connection', socket => {
     });
 
     // пользователь вышел из комнаты
-    socket.on('exitRoom', async ({ room, user }, cb) => {
+    socket.on('exitRoom', async ({ room, user, changeRoom=false }, cb) => {
+        // console.log(room);
+        // console.log(user);
         // цепляемся в определенной комнате
         socket.join(room._id);
 
@@ -157,8 +164,12 @@ io.on('connection', socket => {
         // сохраняем изменения
         await currentRoom.save();
 
+        // тяжелая логика при переходе между комнат наружную текущую комнату не обновляем
+        // а если другой человек выходит то обновляеем
         // бросаем на клиент обновленную комнату
-        io.to(room._id).emit('updateCurrentRoom', currentRoom);
+        if (!changeRoom) {
+            io.to(room._id).emit('updateCurrentRoom', currentRoom);
+        }
         // обновляем список всех комнат на клиенте, нужно чтобы другие участники видели кто и в каких комнатах
         socket._events.updateAllRooms();
         socket._events.updateMyRooms({ user });
@@ -170,7 +181,7 @@ io.on('connection', socket => {
 
     // создать новую комнату
     socket.on('createNewRoom', ({ room, user }, cb) => {
-        console.log('user: ', user);
+        // console.log('user: ', user);
         // console.log('room: ', room);
         socket.emit('setError', []);
 
