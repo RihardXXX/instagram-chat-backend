@@ -26,7 +26,7 @@ const user = new mongoose.Schema({
     is_active: { type: Boolean, default: false },
     roomCount: { type: Number, default: 5 },
     gender: { type: String, default: '' },
-    invitedRooms: [{}],
+    invitedRooms: [],
 }, { timestamps: true });
 
 user.plugin(uniqueValidator, { message: 'такое имя или электронная почта уже существует' });

@@ -73,7 +73,7 @@ authorizationRouter.get('/auth', async function(req, res) {
             const email = decoded.email;
             // находим из БД пользорвателя и возвращаем его
             const user = await User.findOne({ email }).exec();
-            return res.status(200).json({ user });
+            return res.status(200).json({ user: normalizeResponse(user.toObject()) });
         }
     } catch (err) {
         return res.status(500).json({ message: err });
@@ -157,6 +157,52 @@ authorizationRouter.post('/addInvite', async function(req, res) {
                 isUser.invitedRooms.push(invitedRoom);
                 await isUser.save();
                 return res.status(200).json({ result: 'add invite' });
+            }
+        }
+    } catch (err) {
+        return res.status(500).json({ message: err });
+    }
+});
+
+// отклонить приглашение в комнату
+authorizationRouter.post('/deleteInvite', async function(req, res) {
+    // получаем из хедара токен
+    const token = req.headers.authorization.split(' ')[1];
+
+    try {
+        // парсим токен и получаем почту и тп данные
+        const decoded = jwt.verify(token, JWT_SECRET);
+        if (decoded) {
+            const email = decoded.email;
+            // находим из БД пользорвателя и возвращаем его
+            const user = await User.findOne({ email }).exec();
+            if (!user) {
+                return res.status(500).json({ message: 'пройдите авторизацию чтобы получить список пользователей' });
+            }
+
+            // забираем из тела запроса комнату в которую приглашаем и кого приглашаем
+            const { currentUser, invitedRoom } = req.body.data;
+
+            // находим пользователя которого надо пригласить
+            const isUser = await User.findOne({ email: currentUser.email }).exec();
+
+            if (!isUser) {
+                return res.status(500).json({ message: 'такого пользователя не существует' });
+            }
+
+            // console.log('currentUser: ', currentUser);
+            // console.log('invitedRoom: ', invitedRoom);
+            //
+            // проверяем есть ли такое приглашение вообще
+            const isRoomInvited = isUser.invitedRooms.some(room => room._id === invitedRoom._id);
+            //
+            console.log('isRoomInvited: ', isRoomInvited);
+            // если есть такое приглашение то удаляем его
+            if (isRoomInvited) {
+                // удаляем приглашение
+                isUser.invitedRooms = isUser.invitedRooms.filter(room => room._id !== invitedRoom._id);
+                await isUser.save();
+                return res.status(200).json({ user: normalizeResponse(isUser.toObject()) });
             }
         }
     } catch (err) {
