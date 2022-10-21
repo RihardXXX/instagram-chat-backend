@@ -10,7 +10,9 @@ const { app, server } = require('./chat');
 app.use(cors({
     origin: '*'
 }));
-app.use(express.json());
+// app.use(express.json());
+app.use(express.json({limit: '50mb'}));
+app.use(express.urlencoded({limit: '50mb'}));
 
 // Подключаем Mongoose и делаем коннект к базе данных.
 // Прописываем стандартные настройки Mongoose.
