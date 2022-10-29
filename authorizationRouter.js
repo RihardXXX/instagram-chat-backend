@@ -37,6 +37,9 @@ authorizationRouter.post('/registration', function(req, res) {
 authorizationRouter.post('/logIn', async function(req, res) {
     const { email, password } = req.body.user;
 
+    // console.log('email: ', email);
+    // console.log('password: ', password);
+
     try {
         // проверка что такая почта существует
         const isUser = await User.findOne({ email }).exec();

@@ -27,6 +27,7 @@ const user = new mongoose.Schema({
     roomCount: { type: Number, default: 5 },
     gender: { type: String, default: '' },
     invitedRooms: [],
+    bio: { type: String, default: '' },
 }, { timestamps: true });
 
 user.plugin(uniqueValidator, { message: 'такое имя или электронная почта уже существует' });
