@@ -27,6 +27,7 @@ const user = new mongoose.Schema({
     roomCount: { type: Number, default: 5 },
     gender: { type: String, default: '' },
     invitedRooms: [],
+    img: { type: String, default: '' },
     bio: { type: String, default: '' },
 }, { timestamps: true });
 
