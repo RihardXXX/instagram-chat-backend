@@ -213,4 +213,63 @@ authorizationRouter.post('/deleteInvite', async function(req, res) {
     }
 });
 
+// редактирование профиля пользователя 
+authorizationRouter.post('/editUser', async function(req, res) {
+    // получаем из хедара токен
+    const token = req.headers.authorization.split(' ')[1];
+
+    try {
+        // парсим токен и получаем почту и тп данные
+        const decoded = jwt.verify(token, JWT_SECRET);
+        if (decoded) {
+            const email = decoded.email;
+            // находим из БД пользователя и возвращаем его
+            const user = await User.findOne({ email }).exec();
+
+            if (!user) {
+                return res.status(500).json({ message: 'пройдите авторизацию чтобы получить список пользователей' });
+            }
+
+            // если есть им то меняем его
+            if (req.body.data.username) {
+                const newUsername = req.body.data.username;
+                user.username = newUsername;
+                await user.save();
+                return res.status(200).json({ user: normalizeResponse(user.toObject()) });
+            }
+
+            return 'test';
+
+            // console.log('invitedUser: ', invitedUser);
+            // console.log('invitedRoom: ', invitedRoom);
+
+            // находим пользователя которого надо пригласить
+            // const isUser = await User.findOne({ email: invitedUser.email }).exec();
+
+            // if (!isUser) {
+            //     return res.status(500).json({ message: 'такого пользователя не существует' });
+            // }
+
+            // // добавляем комнату если её нет, если есть удаляем
+            // const isRoomInvited = isUser.invitedRooms.some(room => room._id === invitedRoom._id);
+
+            // // console.log('isRoomInvited: ', isRoomInvited);
+
+            // if (isRoomInvited) {
+            //     // если уже приглашен, то снимаем приглашение
+            //     isUser.invitedRooms = isUser.invitedRooms.filter(room => room._id !== invitedRoom._id);
+            //     await isUser.save();
+            //     return res.status(200).json({ result: 'remove invite' });
+            // } else {
+            //     // если не приглашен, то добавляем приглашение
+            //     isUser.invitedRooms.push(invitedRoom);
+            //     await isUser.save();
+            //     return res.status(200).json({ result: 'add invite' });
+            // }
+        }
+    } catch (err) {
+        return res.status(500).json({ message: err });
+    }
+});
+
 module.exports = authorizationRouter;

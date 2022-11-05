@@ -29,6 +29,7 @@ const user = new mongoose.Schema({
     invitedRooms: [],
     img: { type: String, default: '' },
     bio: { type: String, default: '' },
+    socialNetwork: [{}],
 }, { timestamps: true });
 
 user.plugin(uniqueValidator, { message: 'такое имя или электронная почта уже существует' });
