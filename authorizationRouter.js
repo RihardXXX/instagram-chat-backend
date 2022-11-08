@@ -230,10 +230,26 @@ authorizationRouter.post('/editUser', async function(req, res) {
                 return res.status(500).json({ message: 'пройдите авторизацию чтобы получить список пользователей' });
             }
 
-            // если есть им то меняем его
+            // если есть имя то меняем его
             if (req.body.data.username) {
                 const newUsername = req.body.data.username;
                 user.username = newUsername;
+                await user.save();
+                return res.status(200).json({ user: normalizeResponse(user.toObject()) });
+            }
+
+            // если есть пол то меняем его
+            if (req.body.data.gender) {
+                const newGender = req.body.data.gender;
+                user.gender = newGender;
+                await user.save();
+                return res.status(200).json({ user: normalizeResponse(user.toObject()) });
+            }
+
+            // если есть пол то меняем его
+            if (req.body.data.email) {
+                const newEmail = req.body.data.email;
+                user.email = newEmail;
                 await user.save();
                 return res.status(200).json({ user: normalizeResponse(user.toObject()) });
             }
@@ -268,7 +284,7 @@ authorizationRouter.post('/editUser', async function(req, res) {
             // }
         }
     } catch (err) {
-        return res.status(500).json({ message: err });
+        return res.status(500).json({ message: err.message });
     }
 });
 
