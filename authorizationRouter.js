@@ -83,6 +83,8 @@ authorizationRouter.get('/auth', async function(req, res) {
     }
 });
 
+// Эту секцию удалить так как она дублируется из другого роутра profile
+
 // получение списка всех пользователей
 authorizationRouter.get('/allUsers', async function(req, res) {
 
@@ -254,34 +256,16 @@ authorizationRouter.post('/editUser', async function(req, res) {
                 return res.status(200).json({ user: normalizeResponse(user.toObject()) });
             }
 
+            // если есть биография то меняем её
+            // чтобы мы могли и полностью стирать инфо о пользователе
+            if ('bio' in req.body.data) {
+                const newBio = req.body.data.bio;
+                user.bio = newBio;
+                await user.save();
+                return res.status(200).json({ user: normalizeResponse(user.toObject()) });
+            }
+
             return 'test';
-
-            // console.log('invitedUser: ', invitedUser);
-            // console.log('invitedRoom: ', invitedRoom);
-
-            // находим пользователя которого надо пригласить
-            // const isUser = await User.findOne({ email: invitedUser.email }).exec();
-
-            // if (!isUser) {
-            //     return res.status(500).json({ message: 'такого пользователя не существует' });
-            // }
-
-            // // добавляем комнату если её нет, если есть удаляем
-            // const isRoomInvited = isUser.invitedRooms.some(room => room._id === invitedRoom._id);
-
-            // // console.log('isRoomInvited: ', isRoomInvited);
-
-            // if (isRoomInvited) {
-            //     // если уже приглашен, то снимаем приглашение
-            //     isUser.invitedRooms = isUser.invitedRooms.filter(room => room._id !== invitedRoom._id);
-            //     await isUser.save();
-            //     return res.status(200).json({ result: 'remove invite' });
-            // } else {
-            //     // если не приглашен, то добавляем приглашение
-            //     isUser.invitedRooms.push(invitedRoom);
-            //     await isUser.save();
-            //     return res.status(200).json({ result: 'add invite' });
-            // }
         }
     } catch (err) {
         return res.status(500).json({ message: err.message });

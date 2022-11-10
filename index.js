@@ -28,6 +28,11 @@ mongoose.connect(`mongodb://localhost/${process.env.DATABASE}`, {
 const authorizationRouter = require('./authorizationRouter');
 app.use('/authorization', authorizationRouter);
 
+// подключаем роуты для редактирования профиля
+// тут будет сторожевая вышка для проверки токена авторизации
+const profileRouter = require('./profileRouter');
+app.use('/profile', profileRouter);
+
 const consola = require('consola');
 
 // функция запуска сервера
