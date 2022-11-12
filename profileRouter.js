@@ -163,4 +163,66 @@ profileRouter.post('/editUser', async function(req, res) {
     }
 });
 
+// роут для добавления соц сети
+profileRouter.post('/socialNetwork', async function(req, res) {
+    try {
+        const { user, social } = req.body;
+
+        // создаем массив соц сетей добавляя старые данные и новые
+        const newSocials = [...user.socialNetwork, social];
+        // вновь созданный массив кладем в поле соц сетей
+        user.socialNetwork = newSocials;
+        await user.save();
+        return res.status(200).json({ user: normalizeResponse(user.toObject()) });
+    } catch (err) {
+        console.log('err: ', err);
+        return res.status(500).json({ message: err.message });
+    }
+});
+
+// роут для удаления соц сети
+profileRouter.delete('/socialNetwork', async function(req, res) {
+    try {
+        const { user, idSocial } = req.body;
+
+        // фильтруем массив и возвращаем данные которые не совпвдают
+        const newSocials = user.socialNetwork.filter(social => social._id !== idSocial);
+        // вновь созданный массив кладем в поле соц сетей
+        user.socialNetwork = newSocials;
+        await user.save();
+        return res.status(200).json({ user: normalizeResponse(user.toObject()) });
+    } catch (err) {
+        console.log('err: ', err);
+        return res.status(500).json({ message: err.message });
+    }
+});
+
+// роут для изменений соц сети
+profileRouter.update('/socialNetwork', async function(req, res) {
+    try {
+        // подумать над логикой приложения
+        const { user, idSocial, changeSocial } = req.body;
+
+        // находим определенную соц сеть и вносим в неё изменения
+        const currentSocial = user.socialNetwork.find(social => social._id !== idSocial);
+        // в старую соц сеть мерджим новые данные
+        const resultSocial = Object.assign({}, currentSocial, changeSocial);
+        // создаем соц сети без старого объекта
+        // а потом новый объект вносим на его место
+        user.socialNetwork = user.socialNetwork.map(social => {
+            // если социальная сеть равна старой
+            if (social._id === currentSocial._id) {
+                return resultSocial;
+            } else {
+                return social;
+            }
+        })
+        await user.save();
+        return res.status(200).json({ user: normalizeResponse(user.toObject()) });
+    } catch (err) {
+        console.log('err: ', err);
+        return res.status(500).json({ message: err.message });
+    }
+});
+
 module.exports = profileRouter;
