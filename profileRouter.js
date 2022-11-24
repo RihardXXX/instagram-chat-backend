@@ -181,12 +181,16 @@ profileRouter.post('/socialNetwork', async function(req, res) {
 });
 
 // роут для удаления соц сети
-profileRouter.delete('/socialNetwork', async function(req, res) {
+profileRouter.delete('/socialNetwork/:id', async function(req, res) {
     try {
-        const { user, idSocial } = req.body;
+        const { user } = req.body;
+        const id = req.params.id;
+
+        // console.log(id);
 
         // фильтруем массив и возвращаем данные которые не совпвдают
-        const newSocials = user.socialNetwork.filter(social => social._id !== idSocial);
+        const newSocials = user.socialNetwork.filter(social => social.id !== id);
+        // console.log('newSocials', newSocials);
         // вновь созданный массив кладем в поле соц сетей
         user.socialNetwork = newSocials;
         await user.save();
@@ -198,7 +202,7 @@ profileRouter.delete('/socialNetwork', async function(req, res) {
 });
 
 // роут для изменений соц сети
-profileRouter.update('/socialNetwork', async function(req, res) {
+profileRouter.patch('/socialNetwork', async function(req, res) {
     try {
         // подумать над логикой приложения
         const { user, idSocial, changeSocial } = req.body;
