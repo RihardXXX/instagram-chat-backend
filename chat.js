@@ -32,6 +32,7 @@ io.on('connection', socket => {
         // получить все комнаты созданные данным пользователем
         const myRooms = await Room.find({ author: user._id }).exec();
         // вызывать getMyRooms и положить туда список всех моих комнат
+        // console.log('myRooms: ', myRooms);
         io.emit('getMyRooms', myRooms);
     });
 
@@ -67,6 +68,8 @@ io.on('connection', socket => {
 
     // принимаем новое сообщение от клиента
     socket.on('createNewMessage', async ({ text, room, user }, cb) => {
+        // console.log('text: ', text);
+
         // цепляемся в определенной комнате
         socket.join(room._id);
 
@@ -92,6 +95,7 @@ io.on('connection', socket => {
 
         // обновляем на клиенте текущую комнату
         // отправляем с сервера последние 30 сообщений чтобы не нагружать клиент
+        // console.log('currentRoom', currentRoom);
         io.to(room._id).emit('updateCurrentRoom', normalizeRoom(currentRoom));
     });
 

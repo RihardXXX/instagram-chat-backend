@@ -1,18 +1,27 @@
 require('dotenv').config();
 
 // Подключаем бэкенд на Express.
-const express = require('express');
+// const express = require('express');
 const cors = require('cors');
 
 // создаём приложение и настраиваем сокеты
 const { app, server } = require('./chat');
 
+// отрубаем корсы
 app.use(cors({
     origin: '*'
 }));
+// пордключаем бодипарсер
+
+const bodyParser = require('body-parser');
+
 // app.use(express.json());
-app.use(express.json({limit: '50mb'}));
-app.use(express.urlencoded({limit: '50mb'}));
+// app.use(express.json({limit: '50mb'}));
+// app.use(express.urlencoded({limit: '50mb'}));
+// Express 4.0
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
+
 
 // Подключаем Mongoose и делаем коннект к базе данных.
 // Прописываем стандартные настройки Mongoose.
