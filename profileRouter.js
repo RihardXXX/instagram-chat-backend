@@ -38,6 +38,7 @@ profileRouter.use(async function(req, res, next) {
 profileRouter.get('/allUsers', async function(req, res) {
 
     try {
+        const { user } = req.body;
         // получаем список всех пользователей
         const users = await User.find({});
         // убираем пароли у каждого пользователя и себя из списка

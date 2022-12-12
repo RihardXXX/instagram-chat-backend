@@ -22,7 +22,9 @@ io.on('connection', socket => {
     // получение списка всех комнат и обновление их на клиенте
     socket.on('updateAllRooms', async () => {
         // все комнаты
-        const allRooms = await Room.find();
+        const rooms = await Room.find();
+        // вырезаем в комнатах сообщения и оставляем последние 30
+        const allRooms = rooms.map(room => normalizeRoom(room));
         io.emit('initialRoomsClient', allRooms);
     });
 
@@ -30,9 +32,10 @@ io.on('connection', socket => {
     socket.on('updateMyRooms', async ({ user }) => {
         // console.log('user: ', user);
         // получить все комнаты созданные данным пользователем
-        const myRooms = await Room.find({ author: user._id }).exec();
+        const rooms = await Room.find({ author: user._id }).exec();
         // вызывать getMyRooms и положить туда список всех моих комнат
         // console.log('myRooms: ', myRooms);
+        const myRooms = rooms.map(room => normalizeRoom(room));
         io.emit('getMyRooms', myRooms);
     });
 
