@@ -230,4 +230,23 @@ profileRouter.patch('/socialNetwork', async function(req, res) {
     }
 });
 
+// получение данных пользователя по его айди
+profileRouter.get('/get-user/:id', async function(req, res) {
+    try {
+        // из квери параметров получаем айди пользователя которого надо найти
+        const id = req.params.id;
+
+        const user = await User.findOne({ _id: id }).exec();
+
+        if (!user) {
+            return res.status(500).json({ message: 'такого пользователя не существует' });
+        }
+
+        return res.status(200).json({ user: normalizeResponse(user.toObject()) });
+    } catch (err) {
+        console.log('err: ', err);
+        return res.status(500).json({ message: err.message });
+    }
+});
+
 module.exports = profileRouter;
