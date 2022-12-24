@@ -28,7 +28,7 @@ app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 const mongoose = require('mongoose');
 // mongoose.Schema.Types.Boolean.convertToFalse.add("");
 // https://cloud.mongodb.com/v2/63a76ec2a6942d034b4b4fee#/clusters
-mongoose.connect('https://cloud.mongodb.com/v2/63a76ec2a6942d034b4b4fee#/clusters', {
+mongoose.connect('mongodb+srv://admin:admin@my-communication.ayhbjbc.mongodb.net/?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 });
