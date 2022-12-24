@@ -27,7 +27,8 @@ app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 // Прописываем стандартные настройки Mongoose.
 const mongoose = require('mongoose');
 // mongoose.Schema.Types.Boolean.convertToFalse.add("");
-mongoose.connect(`mongodb://localhost/${process.env.DATABASE}`, {
+// https://cloud.mongodb.com/v2/63a76ec2a6942d034b4b4fee#/clusters
+mongoose.connect('https://cloud.mongodb.com/v2/63a76ec2a6942d034b4b4fee#/clusters', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 });
