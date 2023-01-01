@@ -273,7 +273,7 @@ authorizationRouter.post('/editUser', async function(req, res) {
     }
 });
 
-authorizationRouter.post('/authVk', async function(req, res) {
+authorizationRouter.post('/vkAuth', async function(req, res) {
     const { username, email, password, gender } = req.body.user;
 
     // после получения данных делаем проверку на наличие почты в бд
