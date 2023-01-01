@@ -33,7 +33,7 @@ const registrationHandler = (req, res) => {
 const loginHandler = async (req, res) => {
     const { email, password } = req.body.user;
 
-    console.log('test: ', email, password);
+    // console.log('test: ', email, password);
 
     try {
         // проверка что такая почта существует
@@ -45,11 +45,11 @@ const loginHandler = async (req, res) => {
         if (isUser.password !== password) {
             return res.status(500).json({ message: ['пароль указан неверный'] });
         }
-        console.log('try');
+        // console.log('try');
         // если все совпадает возвращаем пользователя
         return res.status(200).json({ user: normalizeResponse(isUser.toObject()) });
     } catch (err) {
-        console.log('catch: ', err);
+        // console.log('catch: ', err);
         return res.status(500).json({ message: err });
     }
 }
@@ -282,13 +282,15 @@ authorizationRouter.post('/vkAuth', async function(req, res) {
     // если почта существует то запускаем логин функцию
     // иначе запускаем регистрацию
 
-    console.log('req.body.user: ', req.body.user);
+    // console.log('req.body.user: ', req.body.user);
     // проверяем есть ли пользователь в бд
     const user = await User.findOne({ email }).exec();
     if (!user) {
         // делаем регистрацию если нет пользователя
         registrationHandler(req, res);
     } else {
+        // в идеале мы должны генерировать временный токен и отправить обратно 
+        // а потом если он нормальный допускать к логину
         // иначе входим под логином и паролем
         loginHandler(req, res);
     }
