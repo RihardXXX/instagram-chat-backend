@@ -51,7 +51,7 @@ const consola = require('consola');
 async function start() {
     server.listen(process.env.PORT, () => {
         consola.ready({
-            message: `Server listening on ${process.env.BASE_URL}:${process.env.PORT}`,
+            message: `Server listening on https://my-communication-ru.onrender.com:${process.env.PORT}`,
             badge: true,
         });
     });
