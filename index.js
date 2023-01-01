@@ -26,6 +26,8 @@ app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 // Подключаем Mongoose и делаем коннект к базе данных.
 // Прописываем стандартные настройки Mongoose.
 const mongoose = require('mongoose');
+// эта хуйня бережет от ошибок 
+mongoose.set("strictQuery", false);
 // mongoose.Schema.Types.Boolean.convertToFalse.add("");
 // https://cloud.mongodb.com/v2/63a76ec2a6942d034b4b4fee#/clusters
 mongoose.connect('mongodb+srv://admin:admin@my-communication.ayhbjbc.mongodb.net/?retryWrites=true&w=majority', {
