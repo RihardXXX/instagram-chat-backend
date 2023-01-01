@@ -33,6 +33,8 @@ const registrationHandler = (req, res) => {
 const loginHandler = async (req, res) => {
     const { email, password } = req.body.user;
 
+    console.log('test: ', email, password);
+
     try {
         // проверка что такая почта существует
         const isUser = await User.findOne({ email }).exec();
@@ -271,7 +273,7 @@ authorizationRouter.post('/editUser', async function(req, res) {
     }
 });
 
-authorizationRouter.post('/vkAuth', async function(req, res) {
+authorizationRouter.post('/authVk', async function(req, res) {
     const { username, email, password, gender } = req.body.user;
 
     // после получения данных делаем проверку на наличие почты в бд
