@@ -45,9 +45,11 @@ const loginHandler = async (req, res) => {
         if (isUser.password !== password) {
             return res.status(500).json({ message: ['пароль указан неверный'] });
         }
+        console.log('try');
         // если все совпадает возвращаем пользователя
         return res.status(200).json({ user: normalizeResponse(isUser.toObject()) });
     } catch (err) {
+        console.log('catch: ', err);
         return res.status(500).json({ message: err });
     }
 }
