@@ -8,7 +8,7 @@ const user = new mongoose.Schema({
         lowercase: true,
         unique: true,
         required: [true, 'поле имени обязательно для заполнения'],
-        match: [/^[a-zA-Z0-9]+$/, 'пожалуйста введите валидное имя пользователя'],
+        match: [/^[a-zA-Z0-9а-яА-Я0-9]+$/, 'пожалуйста введите валидное имя пользователя'],
         index: true,
     },
     email: {
